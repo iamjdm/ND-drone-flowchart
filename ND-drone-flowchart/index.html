@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- head -->
+	<head>
+		<meta charset="utf-8" />
+		<title>Interactive Flowchart</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="./styles.css" />
+		<script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
+		<script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
+		<script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+	</head>
+
+	<body>
+		<header class="toolbar">
+			<!-- toolbar -->
+			<div class="group">
+				<button id="btnAddNode">+ Node</button>
+				<button id="btnAddEdge">+ Edge</button>
+				<button id="btnDelete">🗑️ Delete</button>
+				<button id="btnLayout">↯ Auto-Layout</button>
+			</div>
+
+			<!-- shapes -->
+			<div class="group">
+				<label
+					>Shape:
+					<select id="shapeSelect">
+						<option value="round-rectangle">Round Rect</option>
+						<option value="rectangle">Rectangle</option>
+						<option value="ellipse">Circle/Ellipse</option>
+						<option value="diamond">Diamond</option>
+						<option value="hexagon">Hexagon</option>
+					</select>
+				</label>
+				<label
+					>Max text width:
+					<input id="textWidth" type="number" min="80" max="320" value="180" />
+				</label>
+			</div>
+
+			<!-- import/export -->
+			<div class="group">
+				<button id="btnExport">⬇ Export JSON</button>
+				<label class="import">
+					⬆ Import JSON
+					<input id="importFile" type="file" accept="application/json" />
+				</label>
+				<button id="btnLoadSample">Load Sample</button>
+			</div>
+		</header>
+
+		<main>
+			<!-- inspector -->
+			<aside class="inspector">
+				<h3>Inspector</h3>
+				<label>Label</label>
+				<textarea
+					id="labelInput"
+					rows="6"
+					placeholder="Type node or edge label..."
+				></textarea>
+
+				<div class="row">
+					<label>Width</label>
+					<input id="nodeWidth" type="number" min="60" max="500" value="160" />
+				</div>
+
+				<div class="row">
+					<label>Height</label>
+					<input id="nodeHeight" type="number" min="40" max="500" value="80" />
+				</div>
+
+				<button id="btnApply">Apply Changes</button>
+				<p class="hint">
+					Tip: Word wrap is enabled. Adjust "Max text width" in the toolbar to
+					control wrapping.
+				</p>
+			</aside>
+			<section id="cy"></section>
+		</main>
+
+		<!-- foot-->
+		<footer>
+			Interactive Flowchart — Cytoscape.js • Word wrapping works for all shapes
+		</footer>
+
+		<script src="./app.js"></script>
+	</body>
+</html>

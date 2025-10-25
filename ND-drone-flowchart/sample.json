@@ -1,0 +1,7 @@
+[
+  { "data": { "id": "G1", "label": "Goal G1\nKill switch stops drone motors", "shape": "round-rectangle" } },
+  { "data": { "id": "S1", "label": "Strategy\nRPIC can kill motors when needed", "shape": "round-rectangle" } },
+  { "data": { "id": "O1", "label": "Solution O1\nHiFUZZ tests cover modes, states, and kill-switch durations", "shape": "ellipse" } },
+  { "data": { "id": "G1_S1", "source": "G1", "target": "S1", "label": "" } },
+  { "data": { "id": "S1_O1", "source": "S1", "target": "O1", "label": "" } }
+]
