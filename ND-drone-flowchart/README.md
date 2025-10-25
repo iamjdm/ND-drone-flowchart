@@ -2,8 +2,6 @@
 
 An interactive GUI flowchart editor developed for visualizing drone safety protocols in NASA-funded research at Notre Dame University.
 
-![Flowchart Demo](screenshot.png)
-
 ## Overview
 
 This tool enables researchers to create, edit, and visualize complex flowcharts for drone safety analysis. It was specifically designed to map safety arguments and test coverage for kill-switch functionality in autonomous drone systems.
@@ -116,7 +114,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Developed for NASA-funded research at the University of Notre Dame
 - Built with Cytoscape.js and Dagre layout engine
-- Special thanks to the research team at Notre Dame's aerospace engineering department
+- Special thanks to Dr. Jane Cleland-Huang, Chair of Notre Dame's Department of Computer Science and Engineering, and the drone research team.
 
 ## Contact
 
