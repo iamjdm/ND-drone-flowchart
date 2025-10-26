@@ -114,7 +114,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - Developed for NASA-funded research at the University of Notre Dame
 - Built with Cytoscape.js and Dagre layout engine
-- Special thanks to Professor Aslam Shahid, Division of Science, Math and Technology at Governor State University, and the drone club at Governor State University.
+- Special thanks to Professor Aslam Shahid, Division of Science, Math and Technology at Governors State University, and the drone club at Governor State University.
 - Special thanks to Dr. Jane Cleland-Huang, Chair of Notre Dame's Department of Computer Science and Engineering, and the drone research team.
 
 ## Contact
