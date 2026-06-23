@@ -1,44 +1,76 @@
-# NASA Drone Safety Flowchart System
+# ND Safety Case Studio
 
-An interactive GUI flowchart editor developed for visualizing drone safety protocols in NASA-funded research at Notre Dame University.
+An interactive, browser-based safety case and diagram editor developed for NASA-funded research at the University of Notre Dame. Built to help researchers construct, visualize, and present formal safety arguments for autonomous drone systems using Goal Structuring Notation (GSN), Entity-Relationship Diagrams (ERD), and general flowcharts — all in one tool with no installation required.
 
 ## Overview
 
-This tool enables researchers to create, edit, and visualize complex flowcharts for drone safety analysis. It was specifically designed to map safety arguments and test coverage for kill-switch functionality in autonomous drone systems.
+ND Safety Case Studio provides a structured environment for building safety cases following the GSN standard. Researchers can map safety goals, supporting strategies, solutions (test evidence), context, assumptions, and justifications as a connected argument graph. The tool also supports ERD diagramming for system modeling and a general-purpose flowchart mode for process visualization.
+
+## Modes
+
+### GSN / Safety Case
+Formal Goal Structuring Notation for constructing safety arguments:
+- **Goal (G)** — a safety claim to be argued
+- **Strategy (S)** — the approach used to argue a goal
+- **Solution (Sn)** — evidence (test logs, data) supporting a goal
+- **Context (C)** — context information scoping a goal
+- **Assumption (A)** — assumptions the argument depends on
+- **Justification (J)** — rationale for a strategy
+
+Each node type is auto-numbered (G1, G2, S1, Sn1...) with separate Node ID and Claim text fields rendered in formal `ID ─── Claim` format. Goals can be marked **undeveloped** (dashed amber border + ⬦ marker) to indicate unfinished argument branches.
+
+### ERD
+Entity-Relationship Diagramming for system data modeling:
+- Entity nodes with a live field editor (field name, type, PK toggle)
+- Relationship (diamond) and Attribute (ellipse) node types
+- Edge cardinality labels (1:1, 1:N, N:1, M:N)
+
+### Flowchart
+General-purpose process flowcharts with selectable node shapes (round rectangle, rectangle, ellipse, diamond, hexagon).
 
 ## Features
 
-- **Interactive Node Editing**: Add, delete, and customize nodes with multiple shapes (rectangles, circles, diamonds, hexagons)
-- **Auto-Layout**: Automatic hierarchical graph layout using Dagre algorithm
-- **Text Wrapping**: Smart word wrapping for long labels with adjustable width
-- **Import/Export**: Save and load flowcharts in JSON format
-- **Real-time Editing**: Inspector panel for modifying node properties on the fly
-- **Sample Data**: Pre-loaded example showing a safety argument structure
+- **Three diagram modes** — Flowchart, ERD, GSN/Safety Case; switching clears the canvas
+- **Live inspector** — all node and edge properties update instantly with no Apply button
+- **Undo / Redo** — 50-step history with Ctrl+Z / Ctrl+Y
+- **Node customization** — color picker, shape selector, width control per node
+- **Edge style controls** — curve style (bezier, straight, right-angle), line style (solid, dashed, dotted), arrow shape, and color per edge
+- **Auto-layout** — hierarchical Dagre layout with one click
+- **Snap-to-grid** — toggleable grid overlay with node snapping
+- **Multi-select** — drag to select multiple nodes; bulk color apply
+- **Minimap** — custom canvas minimap with HiDPI-sharp thumbnail, live viewport indicator rectangle, click-to-pan, and grid overlay when snap is active
+- **Presentation mode** — hides all UI chrome for full-screen canvas; press Escape to exit
+- **Shareable links** — full diagram compressed into a URL hash via lz-string; copy to clipboard with one click
+- **Export PNG** — 2× scale high-resolution render with dark background
+- **Export SVG** — vector export via cytoscape-svg
+- **Export / Import JSON** — full diagram save and restore; backward compatible with legacy array format
+- **Auto-save** — saves to localStorage on every change; offers to restore on next visit
+- **Sample diagram** — pre-loaded GSN safety case for a drone kill-switch system
 
-## Technologies Used
+## Technologies
 
-- **Cytoscape.js** - Graph visualization and manipulation
-- **Dagre** - Directed graph layout algorithm
-- **Vanilla JavaScript** - Core application logic
-- **CSS3** - Modern, dark-themed UI
+- **Cytoscape.js** — graph rendering and interaction
+- **cytoscape-dagre** — hierarchical auto-layout
+- **cytoscape-svg** — SVG export
+- **lz-string** — URL compression for shareable links
+- **Vanilla JS / CSS / HTML** — no build step, no framework, runs directly in the browser
 
 ## Getting Started
 
 ### Prerequisites
 
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Local web server (optional, for development)
+A modern web browser (Chrome, Firefox, Safari, Edge). No installation or build step required.
 
-### Installation
+### Running Locally
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/iamjdm/nasa-drone-flowchart.git
-cd nasa-drone-flowchart
+git clone https://github.com/iamjdm/ND-drone-flowchart.git
+cd ND-drone-flowchart/ND-drone-flowchart
 ```
 
-2. Open `index.html` in your browser, or serve with a local server:
+2. Open `index.html` directly in your browser, or serve with a local server for full feature support:
 
 ```bash
 # Python 3
@@ -52,71 +84,59 @@ npx serve
 
 ## Usage
 
-### Creating Nodes
+### Modes
+Select **Flowchart**, **ERD**, or **GSN** from the toolbar. Switching modes clears the canvas (you will be prompted to confirm).
 
-1. Select a shape from the dropdown menu
-2. Click **+ Node** to add a new node to the canvas
-3. Click and drag nodes to reposition them
+### Adding Nodes
+- **Flowchart**: Click **+ Node**; select shape from the Shape dropdown
+- **ERD**: Click **+ Entity**, **+ Relationship**, or **+ Attribute**
+- **GSN**: Click the node type button (Goal, Strategy, Solution, Context, Assumption, Justification); nodes are auto-numbered
 
 ### Editing Nodes
-
-1. Click on a node to select it
-2. Use the Inspector panel on the left to:
-   - Edit the label text
-   - Adjust width and height
-   - Change the shape
-3. Click **Apply Changes** to save
+Click any node to select it. The Inspector panel updates immediately with that node's properties — label, color, width, shape (flowchart), Node ID + Claim (GSN), or field list (ERD entity). All edits are live with no save button.
 
 ### Creating Edges
+1. Click **+ Edge** — the button turns blue and the cursor changes
+2. Click the source node
+3. Click the target node
+4. Press **Escape** to cancel
 
-1. Click **+ Edge** button
-2. Click on the source node
-3. Click on the target node
+### Navigating Large Diagrams
+Use the minimap in the bottom-right corner — click anywhere on it to jump the viewport to that position.
 
-### Auto-Layout
+### Sharing
+Click **🔗 Share** to copy a compressed URL to your clipboard. Anyone with the link can open the exact same diagram.
 
-Click **↯ Auto-Layout** to automatically arrange nodes in a hierarchical layout
-
-### Import/Export
-
-- **Export**: Click **⬇ Export JSON** to download your flowchart
-- **Import**: Click **⬆ Import JSON** and select a previously saved file
-- **Sample**: Click **Load Sample** to see an example safety argument flowchart
-
-## Project Context
-
-This tool was developed as part of NASA-funded drone research at the University of Notre Dame, focusing on safety verification for autonomous systems. The flowchart visualizations help researchers map:
-
-- Safety goals (G nodes)
-- Strategies for achieving goals (S nodes)
-- Solutions and test coverage (O nodes)
-- Relationships between safety arguments
+### Exporting
+- **JSON** — full diagram data for re-import
+- **PNG** — high-resolution raster image
+- **SVG** — scalable vector image
 
 ## File Structure
 
 ```
-├── index.html          # Main HTML structure
-├── styles.css          # UI styling
-├── app.js             # Core application logic
-├── sample.json        # Example flowchart data
-└── README.md          # This file
+ND-drone-flowchart/
+├── index.html      # Application structure and toolbar
+├── app.js          # All application logic
+├── styles.css      # Dark-theme UI styles
+├── sample.json     # Example GSN kill-switch safety case diagram
+└── README.md       # This file
 ```
 
-## Contributing
+## Project Context
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+This tool was developed during a NASA-funded summer research program at the University of Notre Dame. The research focuses on safety verification for autonomous drone systems, specifically mapping safety arguments for kill-switch functionality across multiple flight modes using the GSN standard.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
 - Developed for NASA-funded research at the University of Notre Dame
-- Built with Cytoscape.js and Dagre layout engine
-- Special thanks to Professor Aslam Shahid, Division of Science, Math and Technology at Governors State University, and the drone club at Governors State University.
-- Special thanks to Dr. Jane Cleland-Huang, Chair of Notre Dame's Department of Computer Science and Engineering, and the drone research team.
+- Special thanks to Professor Aslam Shahid, Division of Science, Math and Technology at Governors State University, and the drone club at Governors State University
+- Special thanks to Dr. Jane Cleland-Huang, Chair of Notre Dame's Department of Computer Science and Engineering, and the drone research team
 
 ## Contact
 
-For questions or collaboration opportunities, feel free to reach out via mimnaughjonathan@gmail.com.
+For questions or collaboration opportunities: mimnaughjonathan@gmail.com
