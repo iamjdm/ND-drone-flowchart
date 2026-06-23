@@ -1,88 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
-	<!-- head -->
 	<head>
 		<meta charset="utf-8" />
-		<title>Interactive Flowchart</title>
+		<title>ND Safety Case Studio</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="./styles.css" />
 		<script src="https://unpkg.com/cytoscape@3.28.1/dist/cytoscape.min.js"></script>
 		<script src="https://unpkg.com/dagre@0.8.5/dist/dagre.min.js"></script>
 		<script src="https://unpkg.com/cytoscape-dagre@2.5.0/cytoscape-dagre.js"></script>
+		<script src="https://unpkg.com/cytoscape-svg/cytoscape-svg.js"></script>
+		<script src="https://unpkg.com/lz-string@1.5.0/libs/lz-string.min.js"></script>
 	</head>
 
 	<body>
 		<header class="toolbar">
-			<!-- toolbar -->
+			<!-- Mode -->
+			<div class="group">
+				<span class="toolbar-label">Mode</span>
+				<button class="mode-btn active" data-mode="flowchart">Flowchart</button>
+				<button class="mode-btn" data-mode="erd">ERD</button>
+				<button class="mode-btn" data-mode="gsn">GSN</button>
+			</div>
+
+			<!-- History -->
+			<div class="group">
+				<button id="btnUndo" title="Undo (Ctrl+Z)" disabled>↩ Undo</button>
+				<button id="btnRedo" title="Redo (Ctrl+Y)" disabled>↪ Redo</button>
+			</div>
+
+			<!-- Canvas actions -->
 			<div class="group">
 				<button id="btnAddNode">+ Node</button>
 				<button id="btnAddEdge">+ Edge</button>
-				<button id="btnDelete">🗑️ Delete</button>
-				<button id="btnLayout">↯ Auto-Layout</button>
+				<button id="btnDelete">🗑 Delete</button>
+				<button id="btnLayout">↯ Layout</button>
+				<button id="btnGrid" title="Snap-to-grid">⊞ Grid</button>
 			</div>
 
-			<!-- shapes -->
-			<div class="group">
-				<label
-					>Shape:
+			<!-- Flowchart options -->
+			<div class="group" id="optFlowchart">
+				<label>Shape
 					<select id="shapeSelect">
 						<option value="round-rectangle">Round Rect</option>
 						<option value="rectangle">Rectangle</option>
-						<option value="ellipse">Circle/Ellipse</option>
+						<option value="ellipse">Ellipse</option>
 						<option value="diamond">Diamond</option>
 						<option value="hexagon">Hexagon</option>
 					</select>
 				</label>
-				<label
-					>Max text width:
+				<label>Wrap px
 					<input id="textWidth" type="number" min="80" max="320" value="180" />
 				</label>
 			</div>
 
-			<!-- import/export -->
+			<!-- ERD node types -->
+			<div class="group hidden" id="optERD">
+				<button data-erd-add="erd-entity">+ Entity</button>
+				<button data-erd-add="erd-relationship">+ Relationship</button>
+				<button data-erd-add="erd-attribute">+ Attribute</button>
+			</div>
+
+			<!-- GSN node types -->
+			<div class="group hidden" id="optGSN">
+				<button data-gsn-add="gsn-goal">Goal</button>
+				<button data-gsn-add="gsn-strategy">Strategy</button>
+				<button data-gsn-add="gsn-solution">Solution</button>
+				<button data-gsn-add="gsn-context">Context</button>
+				<button data-gsn-add="gsn-assumption">Assumption</button>
+				<button data-gsn-add="gsn-justification">Justification</button>
+			</div>
+
+			<!-- Export / share -->
 			<div class="group">
-				<button id="btnExport">⬇ Export JSON</button>
-				<label class="import">
-					⬆ Import JSON
-					<input id="importFile" type="file" accept="application/json" />
-				</label>
-				<button id="btnLoadSample">Load Sample</button>
+				<button id="btnExportJSON">⬇ JSON</button>
+				<button id="btnExportPNG">📷 PNG</button>
+				<button id="btnExportSVG">⬡ SVG</button>
+				<label class="file-label">⬆ Import<input id="importFile" type="file" accept="application/json" /></label>
+				<button id="btnShare">🔗 Share</button>
+				<button id="btnLoadSample">Sample</button>
+				<button id="btnPresent">🖥 Present</button>
 			</div>
 		</header>
 
 		<main>
-			<!-- inspector -->
 			<aside class="inspector">
 				<h3>Inspector</h3>
-				<label>Label</label>
-				<textarea
-					id="labelInput"
-					rows="6"
-					placeholder="Type node or edge label..."
-				></textarea>
 
-				<div class="row">
-					<label>Width</label>
-					<input id="nodeWidth" type="number" min="60" max="500" value="160" />
+				<!-- Empty state -->
+				<p id="inspEmpty" class="hint">Select an element to inspect.</p>
+
+				<!-- Generic label: flowchart nodes, edges, ERD non-entity nodes -->
+				<div id="inspLabel" class="insp-section hidden">
+					<label>Label</label>
+					<textarea id="labelInput" rows="4" placeholder="Label..."></textarea>
 				</div>
 
-				<div class="row">
-					<label>Height</label>
-					<input id="nodeHeight" type="number" min="40" max="500" value="80" />
+				<!-- GSN label: separate ID + Claim -->
+				<div id="inspGSNLabel" class="insp-section hidden">
+					<label>Node ID</label>
+					<input id="gsnIdInput" type="text" placeholder="G1, S1, Sn1..." />
+					<label>Claim</label>
+					<textarea id="gsnClaimInput" rows="5" placeholder="Describe the safety claim..."></textarea>
 				</div>
 
-				<button id="btnApply">Apply Changes</button>
-				<p class="hint">
-					Tip: Word wrap is enabled. Adjust "Max text width" in the toolbar to
-					control wrapping.
-				</p>
+				<!-- Node-specific controls (any single node) -->
+				<div id="inspNode" class="insp-section hidden">
+					<div class="row">
+						<label>Color</label>
+						<input id="nodeColor" type="color" value="#2c3654" />
+					</div>
+					<div id="shapeRow" class="row">
+						<label>Shape</label>
+						<select id="inspShape">
+							<option value="round-rectangle">Round Rect</option>
+							<option value="rectangle">Rectangle</option>
+							<option value="ellipse">Ellipse</option>
+							<option value="diamond">Diamond</option>
+							<option value="hexagon">Hexagon</option>
+						</select>
+					</div>
+					<div class="row">
+						<label>Width</label>
+						<input id="nodeWidth" type="number" min="60" max="600" value="160" />
+					</div>
+				</div>
+
+				<!-- GSN Goal: undeveloped toggle -->
+				<div id="inspGSN" class="insp-section hidden">
+					<div class="row undeveloped-row">
+						<input id="chkUndeveloped" type="checkbox" />
+						<label for="chkUndeveloped">Mark as Undeveloped ⬦</label>
+					</div>
+				</div>
+
+				<!-- Edge-specific controls -->
+				<div id="inspEdge" class="insp-section hidden">
+					<div class="row">
+						<label>Route</label>
+						<select id="edgeRoute">
+							<option value="bezier">Bezier</option>
+							<option value="straight">Straight</option>
+							<option value="taxi">Right Angle</option>
+						</select>
+					</div>
+					<div class="row">
+						<label>Line</label>
+						<select id="edgeStyle">
+							<option value="solid">Solid</option>
+							<option value="dashed">Dashed</option>
+							<option value="dotted">Dotted</option>
+						</select>
+					</div>
+					<div class="row">
+						<label>Arrow</label>
+						<select id="edgeArrow">
+							<option value="triangle">Triangle</option>
+							<option value="none">None</option>
+							<option value="circle">Circle</option>
+							<option value="diamond">Diamond</option>
+							<option value="tee">Tee</option>
+						</select>
+					</div>
+					<div class="row">
+						<label>Color</label>
+						<input id="edgeColor" type="color" value="#7e8aa6" />
+					</div>
+					<div id="cardinalityRow" class="row hidden">
+						<label>Rel.</label>
+						<select id="edgeCardinality">
+							<option value="">—</option>
+							<option value="1:1">1 : 1</option>
+							<option value="1:N">1 : N</option>
+							<option value="N:1">N : 1</option>
+							<option value="M:N">M : N</option>
+						</select>
+					</div>
+				</div>
+
+				<!-- ERD entity fields editor -->
+				<div id="inspERD" class="insp-section hidden">
+					<label>Fields</label>
+					<div id="erdFields"></div>
+					<button id="btnAddField" class="small-btn">+ Add Field</button>
+				</div>
+
+				<!-- Multi-select -->
+				<div id="inspMulti" class="insp-section hidden">
+					<p id="multiInfo" class="hint"></p>
+					<div class="row">
+						<label>Color</label>
+						<input id="multiColor" type="color" value="#2c3654" />
+					</div>
+					<button id="btnApplyMulti" class="small-btn">Apply Color to All</button>
+				</div>
+
+				<p class="hint" style="margin-top:1rem">Labels update live. Ctrl+Z to undo.</p>
 			</aside>
-			<section id="cy"></section>
+
+			<section id="cy">
+				<canvas id="minimap" title="Click to pan"></canvas>
+				<button id="btnExitPresent">✕ Exit Presentation</button>
+			</section>
 		</main>
 
-		<!-- foot-->
 		<footer>
-			Interactive Flowchart — Cytoscape.js • Word wrapping works for all shapes
+			ND Safety Case Studio &mdash; <span id="footerMode">Flowchart Mode</span>
+			<span id="saveIndicator" class="save-indicator"></span>
 		</footer>
 
 		<script src="./app.js"></script>

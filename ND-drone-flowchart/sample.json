@@ -1,7 +1,108 @@
-[
-  { "data": { "id": "G1", "label": "Goal G1\nKill switch stops drone motors", "shape": "round-rectangle" } },
-  { "data": { "id": "S1", "label": "Strategy\nRPIC can kill motors when needed", "shape": "round-rectangle" } },
-  { "data": { "id": "O1", "label": "Solution O1\nHiFUZZ tests cover modes, states, and kill-switch durations", "shape": "ellipse" } },
-  { "data": { "id": "G1_S1", "source": "G1", "target": "S1", "label": "" } },
-  { "data": { "id": "S1_O1", "source": "S1", "target": "O1", "label": "" } }
-]
+{
+  "mode": "gsn",
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "g1",
+          "nodeType": "gsn-goal",
+          "gsnId": "G1",
+          "gsnClaim": "Kill switch reliably stops drone motors in all flight modes",
+          "label": "G1\n────────────────\nKill switch reliably stops drone motors in all flight modes"
+        },
+        "style": { "width": 220, "height": 130 }
+      },
+      {
+        "data": {
+          "id": "c1",
+          "nodeType": "gsn-context",
+          "gsnId": "C1",
+          "gsnClaim": "Autonomous drone with RPIC manual override capability",
+          "label": "C1\n────────────────\nAutonomous drone with RPIC manual override capability"
+        },
+        "style": { "width": 210, "height": 120 }
+      },
+      {
+        "data": {
+          "id": "s1",
+          "nodeType": "gsn-strategy",
+          "gsnId": "S1",
+          "gsnClaim": "Argument over all tested flight modes and kill-switch durations",
+          "label": "S1\n────────────────\nArgument over all tested flight modes and kill-switch durations"
+        },
+        "style": { "width": 220, "height": 130 }
+      },
+      {
+        "data": {
+          "id": "g2",
+          "nodeType": "gsn-goal",
+          "gsnId": "G2",
+          "gsnClaim": "Kill switch stops motors in Manual flight mode",
+          "label": "G2\n────────────────\nKill switch stops motors in Manual flight mode"
+        },
+        "style": { "width": 200, "height": 110 }
+      },
+      {
+        "data": {
+          "id": "g3",
+          "nodeType": "gsn-goal",
+          "gsnId": "G3",
+          "gsnClaim": "Kill switch stops motors in Autonomous flight mode",
+          "label": "G3\n────────────────\nKill switch stops motors in Autonomous flight mode"
+        },
+        "style": { "width": 200, "height": 110 }
+      },
+      {
+        "data": {
+          "id": "g4",
+          "nodeType": "gsn-goal",
+          "gsnId": "G4",
+          "gsnClaim": "Kill switch responds within acceptable latency",
+          "label": "G4\n────────────────\nKill switch responds within acceptable latency",
+          "undeveloped": true
+        },
+        "style": { "width": 200, "height": 110 }
+      },
+      {
+        "data": {
+          "id": "sn1",
+          "nodeType": "gsn-solution",
+          "gsnId": "Sn1",
+          "gsnClaim": "HiFUZZ test log: Manual mode — all duration variants pass",
+          "label": "Sn1\n────────────────\nHiFUZZ test log: Manual mode — all duration variants pass"
+        },
+        "style": { "width": 200, "height": 120 }
+      },
+      {
+        "data": {
+          "id": "sn2",
+          "nodeType": "gsn-solution",
+          "gsnId": "Sn2",
+          "gsnClaim": "HiFUZZ test log: Autonomous mode — all duration variants pass",
+          "label": "Sn2\n────────────────\nHiFUZZ test log: Autonomous mode — all duration variants pass"
+        },
+        "style": { "width": 200, "height": 120 }
+      },
+      {
+        "data": {
+          "id": "a1",
+          "nodeType": "gsn-assumption",
+          "gsnId": "A1",
+          "gsnClaim": "Flight modes enumerated in test plan are exhaustive",
+          "label": "A1\n────────────────\nFlight modes enumerated in test plan are exhaustive"
+        },
+        "style": { "width": 200, "height": 120 }
+      }
+    ],
+    "edges": [
+      { "data": { "id": "e1", "source": "g1", "target": "s1",  "label": "" } },
+      { "data": { "id": "e2", "source": "g1", "target": "c1",  "label": "" } },
+      { "data": { "id": "e3", "source": "s1", "target": "g2",  "label": "" } },
+      { "data": { "id": "e4", "source": "s1", "target": "g3",  "label": "" } },
+      { "data": { "id": "e5", "source": "s1", "target": "g4",  "label": "" } },
+      { "data": { "id": "e6", "source": "s1", "target": "a1",  "label": "" } },
+      { "data": { "id": "e7", "source": "g2", "target": "sn1", "label": "" } },
+      { "data": { "id": "e8", "source": "g3", "target": "sn2", "label": "" } }
+    ]
+  }
+}

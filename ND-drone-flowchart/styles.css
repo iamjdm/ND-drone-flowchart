@@ -6,74 +6,403 @@
 	--muted: #9aa3b2;
 	--accent: #6ea8fe;
 	--btn: #232838;
-	--edge: #7e8aa6;
+	--border: #2a3147;
 }
 
 html,
 body {
 	height: 100%;
 	margin: 0;
-	font-family: system-ui, Arial;
+	overflow: hidden;
+	font-family: system-ui, Arial, sans-serif;
 	background: var(--bg);
 	color: var(--text);
 }
 
-/* TOOLBAR */
+/* ─── TOOLBAR ──────────────────────────────────── */
 .toolbar {
 	display: flex;
-	justify-content: space-between;
-	padding: 0.75rem 1rem;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	padding: 0.6rem 1rem;
 	background: var(--panel);
+	border-bottom: 1px solid var(--border);
 }
 
 .toolbar .group {
 	display: flex;
-	gap: 0.5rem;
+	gap: 0.35rem;
 	align-items: center;
 	flex-wrap: wrap;
 }
 
+.toolbar-label {
+	font-size: 0.75rem;
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
 .toolbar button,
 .toolbar select,
-.toolbar input {
+.toolbar input[type="number"] {
 	background: var(--btn);
 	color: var(--text);
-	border: 1px solid #2a3147;
-	border-radius: 0.5rem;
-	padding: 0.4rem 0.6rem;
+	border: 1px solid var(--border);
+	border-radius: 0.4rem;
+	padding: 0.35rem 0.6rem;
+	font-size: 0.82rem;
+	cursor: pointer;
 }
 
+.toolbar button:hover {
+	border-color: #4a5470;
+}
+
+.toolbar button:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+/* Active state — used for + Edge, Grid, and mode buttons */
+.toolbar button.active {
+	background: var(--accent);
+	color: #0c0f17;
+	border-color: var(--accent);
+	font-weight: 600;
+}
+
+/* Mode buttons */
+.mode-btn {
+	border-radius: 0.4rem;
+}
+
+/* File import label styled as button */
+.file-label {
+	background: var(--btn);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 0.4rem;
+	padding: 0.35rem 0.6rem;
+	font-size: 0.82rem;
+	cursor: pointer;
+	white-space: nowrap;
+}
+
+.file-label:hover {
+	border-color: #4a5470;
+}
+
+.file-label input[type="file"] {
+	display: none;
+}
+
+/* ─── LAYOUT ───────────────────────────────────── */
 main {
 	display: grid;
-	grid-template-columns: 320px 1fr;
-	height: calc(100vh - 100px);
+	grid-template-columns: 300px 1fr;
+	height: calc(100vh - 88px);
+	overflow: hidden;
 }
 
-#cy {
-	width: 100%;
-	height: 100%;
-	border-left: 1px solid #222736;
-}
-
-/* INSPECTOR */
+/* ─── INSPECTOR ─────────────────────────────────── */
 .inspector {
+	min-width: 0;
 	background: var(--panel);
 	padding: 1rem;
-	border-right: 1px solid #222736;
+	border-right: 1px solid var(--border);
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+}
+
+.inspector h3 {
+	margin: 0 0 0.6rem;
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--muted);
+}
+
+.insp-section {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	margin-bottom: 0.5rem;
+}
+
+.inspector label {
+	font-size: 0.8rem;
+	color: var(--muted);
 }
 
 .inspector textarea,
-.inspector input {
+.inspector select,
+.inspector input[type="text"],
+.inspector input[type="number"] {
 	width: 100%;
 	background: #11141b;
-	border: 1px solid #2a3147;
+	border: 1px solid var(--border);
 	color: var(--text);
-	padding: 0.5rem;
-	border-radius: 0.5rem;
+	padding: 0.45rem 0.5rem;
+	border-radius: 0.4rem;
+	font-size: 0.82rem;
+	box-sizing: border-box;
+	resize: vertical;
 }
 
+.inspector textarea:focus,
+.inspector select:focus,
+.inspector input:focus {
+	outline: none;
+	border-color: var(--accent);
+}
+
+.inspector .row {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+}
+
+.inspector .row label {
+	flex-shrink: 0;
+	width: 42px;
+}
+
+.inspector .row select,
+.inspector .row input[type="number"],
+.inspector .row input[type="text"] {
+	flex: 1;
+}
+
+.inspector input[type="color"] {
+	width: 36px;
+	height: 28px;
+	padding: 2px;
+	border: 1px solid var(--border);
+	border-radius: 0.3rem;
+	background: #11141b;
+	cursor: pointer;
+}
+
+.small-btn {
+	background: var(--btn);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 0.4rem;
+	padding: 0.35rem 0.6rem;
+	font-size: 0.8rem;
+	cursor: pointer;
+	text-align: left;
+}
+
+.small-btn:hover {
+	border-color: #4a5470;
+}
+
+.hint {
+	font-size: 0.75rem;
+	color: var(--muted);
+	margin: 0;
+	line-height: 1.4;
+}
+
+/* ─── ERD FIELD ROWS ────────────────────────────── */
+#erdFields {
+	display: flex;
+	flex-direction: column;
+	gap: 0.3rem;
+}
+
+.erd-field-row {
+	display: flex;
+	gap: 0.25rem;
+	align-items: center;
+}
+
+.erd-field-row input[type="checkbox"] {
+	flex-shrink: 0;
+	width: 14px;
+	height: 14px;
+	cursor: pointer;
+	accent-color: var(--accent);
+}
+
+.erd-field-row input[type="text"] {
+	flex: 1;
+	padding: 0.25rem 0.4rem;
+	font-size: 0.75rem;
+}
+
+.f-del {
+	flex-shrink: 0;
+	background: transparent;
+	color: #ef5350;
+	border: 1px solid #3a2020;
+	border-radius: 0.3rem;
+	padding: 0.15rem 0.4rem;
+	font-size: 0.85rem;
+	cursor: pointer;
+	line-height: 1;
+}
+
+.f-del:hover {
+	background: #3a2020;
+}
+
+/* ─── CANVAS ─────────────────────────────────────── */
+#cy {
+	position: relative;
+	min-width: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	border-left: 1px solid var(--border);
+}
+
+/* Grid background — toggled via .snap-grid class */
+#cy.snap-grid {
+	background-image:
+		linear-gradient(to right, #1a1e2a 1px, transparent 1px),
+		linear-gradient(to bottom, #1a1e2a 1px, transparent 1px);
+}
+
+/* ─── MINIMAP ─────────────────────────────────────── */
+#minimap {
+	position: absolute;
+	bottom: 12px;
+	right: 12px;
+	width: 180px;
+	height: 115px;
+	background: rgba(23, 26, 33, 0.95);
+	border: none;
+	border-radius: 3px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+	overflow: hidden;
+	z-index: 10;
+	cursor: crosshair;
+	display: block;
+}
+
+/* ─── PRESENTATION MODE ───────────────────────────── */
+body.presenting .toolbar,
+body.presenting .inspector,
+body.presenting footer {
+	display: none;
+}
+
+body.presenting main {
+	grid-template-columns: 1fr;
+	height: 100vh;
+}
+
+body.presenting #cy {
+	border-left: none;
+}
+
+#btnExitPresent {
+	display: none;
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	z-index: 100;
+	background: rgba(23, 26, 33, 0.9);
+	color: var(--text);
+	border: 1px solid var(--border);
+	border-radius: 0.4rem;
+	padding: 0.4rem 0.9rem;
+	font-size: 0.82rem;
+	cursor: pointer;
+	backdrop-filter: blur(4px);
+}
+
+#btnExitPresent:hover {
+	background: rgba(42, 48, 71, 0.95);
+}
+
+body.presenting #btnExitPresent {
+	display: block;
+}
+
+/* Hide minimap in presentation */
+body.presenting #minimap {
+	display: none;
+}
+
+/* ─── GSN INSPECTOR ──────────────────────────────── */
+
+/* ID input in GSN section gets a monospace look */
+#gsnIdInput {
+	font-family: monospace;
+	font-size: 0.9rem;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+}
+
+/* Undeveloped checkbox row */
+.undeveloped-row {
+	gap: 0.5rem;
+	padding: 0.35rem 0;
+}
+
+.undeveloped-row input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+	accent-color: #ffb300;
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.inspector .row.undeveloped-row label {
+	color: #ffb300;
+	cursor: pointer;
+	width: auto;
+}
+
+/* ─── FOOTER ─────────────────────────────────────── */
 footer {
 	background: var(--panel);
-	padding: 0.5rem 1rem;
+	padding: 0.45rem 1rem;
 	color: var(--muted);
+	font-size: 0.78rem;
+	border-top: 1px solid var(--border);
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.save-indicator {
+	font-size: 0.72rem;
+	color: #4caf50;
+	opacity: 0;
+	transition: opacity 0.4s;
+}
+
+.save-indicator.visible {
+	opacity: 1;
+}
+
+/* ─── UTILITY ────────────────────────────────────── */
+.hidden {
+	display: none !important;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 700px) {
+	main {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto 1fr;
+		height: calc(100vh - 130px);
+	}
+
+	.inspector {
+		border-right: none;
+		border-bottom: 1px solid var(--border);
+		max-height: 220px;
+	}
+
+	#cy {
+		border-left: none;
+	}
 }
